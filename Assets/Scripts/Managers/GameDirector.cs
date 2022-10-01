@@ -37,6 +37,9 @@ namespace Scripts.Managers
             m_input.actions["Move"].canceled += (_) => SendMoveDirection(0.0f);
 
             m_input.actions["Jump"].performed += (_) => m_player.OnJump();
+            m_input.actions["Jump"].canceled += (_) => m_player.EndJump();
+
+            m_input.actions["Special"].started += (_) => m_player.OnShadowForm();
         }
 
         private void Update()

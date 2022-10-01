@@ -24,6 +24,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "2406af28-7b39-4a57-990d-869599b2bcaf",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Special",
                     "type": "Button",
                     "id": "1afe2188-25f3-4e80-8f22-67b9c8df6a40",
@@ -156,7 +165,7 @@
                 {
                     "name": "",
                     "id": "e39031ba-6091-4cf1-a9bd-c65f9c641574",
-                    "path": "",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -172,6 +181,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Interact",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "77b0ad77-fe73-4cf5-84eb-a63e78db7ad9",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
