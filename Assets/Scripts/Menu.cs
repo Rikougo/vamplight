@@ -10,6 +10,7 @@ public class Menu : MonoBehaviour
     [Header("Menu Componnents")]
     public CanvasGroup blackFade;
     public GameObject buttons;
+    private bool canSwitchScenes = false;
 
     
     public CanvasGroup credits;
@@ -23,6 +24,7 @@ public class Menu : MonoBehaviour
         blackFade.gameObject.SetActive(true);
         creditsBlackFade.alpha = 0;
         credits.gameObject.SetActive(false);
+        canSwitchScenes = false;
     }
 
     void Start()
@@ -34,9 +36,13 @@ public class Menu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
+    /// <summary>
+    /// Fades from black to display the title screen menu.
+    /// </summary>
+    /// <param name="context"></param>
     public void BlackFadeIn()
     {
         Invoke("BlackFadeOff", 3);
@@ -48,17 +54,36 @@ public class Menu : MonoBehaviour
         blackFade.gameObject.SetActive(false);
     }
 
+
+    /// <summary>
+    /// Displays the "play", "credits", and "quit" buttons on screen.
+    /// </summary>
+    /// <param name="context"></param>
     public void ButtonsIn()
     {
         buttons.LeanMoveLocal(new Vector3(0, -280f, 0), 1.25f).setEase(LeanTweenType.easeOutCubic); ;
     }
 
-
-    public void MyLoadScene(int idScene)
+    /// <summary>
+    /// Loads the level while fading to black.
+    /// </summary>
+    /// <param name="context"></param>
+    public void StartLevel(int idScene)
     {
-        SceneManager.LoadScene(idScene);
+        AsyncOperation asyncScene = SceneManager.LoadSceneAsync((int)idScene, LoadSceneMode.Single);
+        asyncScene.allowSceneActivation = false;
+        blackFade.gameObject.gameObject.SetActive(true);
+        blackFade.LeanAlpha(1f, 1f).setOnComplete(() =>
+        {
+            asyncScene.allowSceneActivation = true;
+            Debug.Log("Scene Loaded");
+        });
     }
 
+    /// <summary>
+    /// Displays the credits.
+    /// </summary>
+    /// <param name="context"></param>
     public void CreditsIn()
     {
         credits.gameObject.SetActive(true );
@@ -68,6 +93,10 @@ public class Menu : MonoBehaviour
         backButton.LeanMoveLocal(new Vector3(810, 450, 0), 1.25f).setEase(LeanTweenType.easeOutCubic); ;
     }
 
+    /// <summary>
+    /// Disables the display of the credits.
+    /// </summary>
+    /// <param name="context"></param>
     public void CreditsOut()
     {
         Invoke("CreditsOff", 0.5f);
@@ -76,7 +105,6 @@ public class Menu : MonoBehaviour
         thanks.LeanMoveLocal(new Vector3(1880, -1080f, 0), 1.25f).setEase(LeanTweenType.easeOutCubic); ;
         backButton.LeanMoveLocal(new Vector3(1880, 1080f, 0), 1.25f).setEase(LeanTweenType.easeOutCubic); ;
     }
-
     private void CreditsOff()
     {
         credits.gameObject.SetActive(false );
