@@ -4,7 +4,6 @@ using UnityEngine.Rendering.Universal;
 
 namespace Scripts.Lights
 {
-    [ExecuteInEditMode]
     [RequireComponent(typeof(Light2D))]
     public class AggressiveSpotlight : MonoBehaviour
     {
@@ -13,6 +12,7 @@ namespace Scripts.Lights
         private float m_openAngle = 45.0f;
         [SerializeField] private float m_detectionPrecision = 5.0f;
         [SerializeField] private LayerMask m_playerMask;
+        [SerializeField] private LayerMask m_groundMask;
 
         public delegate void OnLightEnterHandler(AggressiveSpotlight p_spotLight);
 
@@ -48,11 +48,12 @@ namespace Scripts.Lights
                         transform.position,
                         l_direction,
                         float.MaxValue,
-                        m_playerMask);
+                        m_playerMask | m_groundMask);
 
                     if (l_hit.collider == l_playerCollider)
                     {
                         m_colliding = true;
+                        l_playerCollider.GetComponent<Player>()?.Die();
                         break;
                     }
                 }

@@ -33,13 +33,15 @@ namespace Scripts.Managers
 #endif
             }
 
-            m_input.actions["Move"].performed += (p_ctx) => SendMoveDirection(p_ctx.ReadValue<float>());
-            m_input.actions["Move"].canceled += (_) => SendMoveDirection(0.0f);
+            m_input.actions["Move"].performed += (p_ctx) => this.SendMoveDirection(p_ctx.ReadValue<float>());
+            m_input.actions["Move"].canceled += (_) => this.SendMoveDirection(0.0f);
 
             m_input.actions["Jump"].performed += (_) => m_player.OnJump();
             m_input.actions["Jump"].canceled += (_) => m_player.EndJump();
 
             m_input.actions["Special"].started += (_) => m_player.OnShadowForm();
+
+            m_player.OnPlayerDeath += this.OnPlayerDeath;
         }
 
         private void Update()
@@ -50,6 +52,11 @@ namespace Scripts.Managers
         private void SendMoveDirection(float p_direction)
         {
             m_player.Direction = p_direction;
+        }
+
+        private void OnPlayerDeath(Player p_player)
+        {
+            
         }
         
         #region TIMERS
