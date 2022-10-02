@@ -43,13 +43,10 @@ namespace Scripts
         private void Awake()
         {
             m_rigidBody = GetComponent<Rigidbody2D>();
-        }
-
-        private void Start()
-        {
+            
             m_currentSpeed = m_speed;
         }
-
+        
         public void Update()
         {
             m_grounded = !(Physics2D.OverlapCircle(m_groundChecker.position, m_groundCheckerRadius, m_groundMask) is null);
