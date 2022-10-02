@@ -69,7 +69,7 @@ namespace Scripts.Lights
         /// <summary>
         /// Debug purpose only
         /// </summary>
-        private void OnDrawGizmos()
+        private void OnDrawGizmosSelected()
         {
             Vector3 l_pos = transform.position;
             Gizmos.color = m_colliding ? Color.red : Color.yellow;
