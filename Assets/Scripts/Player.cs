@@ -17,6 +17,7 @@ namespace Scripts
 
         public event OnPlayerDeathHandler OnPlayerDeath;
         public UnityEvent<float> OnPlayerHealthUpdate;
+        public UnityEvent<float> OnPlayerCooldownUpdate;
 
         private GameDirector m_director;
 
@@ -38,15 +39,15 @@ namespace Scripts
         [SerializeField] private float m_jumpEndGravityScale = 2.5f;
         [SerializeField] private float m_fallGravityScale = 2f;
 
-        [Header("GroundChecker Parameters")] [SerializeField]
-        private Transform m_groundChecker;
+        [Header("GroundChecker Parameters")] 
+        [SerializeField] private Transform m_groundChecker;
 
         [SerializeField] private float m_groundCheckerRadius;
         [SerializeField] private LayerMask m_groundMask;
         private bool m_grounded;
 
-        [Header("Shadow Form Parameters")] [SerializeField]
-        private float m_sFSpeed = 5.0f;
+        [Header("Shadow Form Parameters")] 
+        [SerializeField] private float m_sFSpeed = 5.0f;
 
         [SerializeField] private float m_sFJumpForce = 5f;
         private bool m_inShadowForm;
@@ -82,7 +83,7 @@ namespace Scripts
             get => m_currentHealth;
         }
 
-        public bool CanTakeDamage => m_isAlive && !m_inShadowForm && !m_isProtected;
+        private bool CanTakeDamage => m_isAlive && !m_inShadowForm && !m_isProtected;
 
         private void Awake()
         {
@@ -155,22 +156,31 @@ namespace Scripts
 
                 m_shadowFormAvailable = false;
 
-                m_inShadowForm = true;
-                m_currentSpeed = m_sFSpeed;
-                m_currentJumpForce = m_sFJumpForce;
-                m_playerSprite.color = new Color(0, 0, 0, 1);
+                SetShadowForm(true);
 
+                // Delay to end
                 m_director.AddDelayedAction(m_sFDuration, (_) =>
                 {
-                    m_inShadowForm = false;
-                    m_currentSpeed = m_speed;
-                    m_currentJumpForce = m_jumpForce;
-                    m_playerSprite.color = new Color(1, 1, 1, 1);
+                    SetShadowForm(false);
 
-                    m_shadowFormTimerID =
-                        m_director.AddDelayedAction(m_shadowFormCooldown, (_) => { m_shadowFormAvailable = true; });
+                    // Start cooldown
+                    m_shadowFormTimerID = m_director.AddTimer(m_shadowFormCooldown, 
+                        (p_timer, _) => this.OnPlayerCooldownUpdate?.Invoke(p_timer.Progress), 
+                        (_) =>
+                            {
+                                this.OnPlayerCooldownUpdate?.Invoke(1.0f);
+                                m_shadowFormAvailable = true;
+                            });
                 });
             }
+        }
+
+        private void SetShadowForm(bool p_active)
+        {
+            m_inShadowForm = p_active;
+            m_currentSpeed = p_active ? m_sFSpeed : m_speed;
+            m_currentJumpForce = p_active ? m_sFJumpForce : m_jumpForce;
+            m_playerSprite.color = p_active ? Color.black : Color.white;
         }
 
         public void TakeDamage(GameObject p_from, float p_amount)
@@ -206,8 +216,9 @@ namespace Scripts
             if (!m_isAlive || m_inShadowForm) return;
 
             m_isAlive = false;
+            this.OnPlayerDeath?.Invoke(this);
 
-            m_playerSprite.enabled = false;
+            m_playerSprite.gameObject.SetActive(false);
             m_rigidBody.isKinematic = true;
             m_rigidBody.velocity = Vector2.zero;
             m_collider.enabled = false;
@@ -262,6 +273,7 @@ namespace Scripts
             {
                 KillableNpc l_target = m_killableInRange.First();
                 transform.position = l_target.transform.position;
+                m_deathParticles.Play();
                 m_currentHealth += 20.0f;
                 this.OnPlayerHealthUpdate?.Invoke(m_currentHealth / m_maxHealth);
                 Destroy(l_target.gameObject);

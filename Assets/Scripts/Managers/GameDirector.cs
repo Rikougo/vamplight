@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
 using Scripts.Managers.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 
 namespace Scripts.Managers
 {
@@ -12,8 +15,13 @@ namespace Scripts.Managers
         private PlayerInput m_input;
         public PlayerInput Input => m_input;
 
+        [SerializeField] private Volume m_globalVolume;
         [SerializeField] private Player m_player;
+        [SerializeField] private CinemachineBrain m_cameraBrain;
 
+        [SerializeField] private VolumeProfile m_defaultVolumeProfile;
+        [SerializeField] private VolumeProfile m_deathVolumeProfile;
+ 
         private void Awake()
         {
             m_timers = new Dictionary<int, TimerHolder>();
@@ -57,8 +65,27 @@ namespace Scripts.Managers
 
         private void OnPlayerDeath(Player p_player)
         {
+            m_globalVolume.profile = m_deathVolumeProfile;
             
-        }
+            const float targetAmplitudeGain = 2.5f;
+            CinemachineVirtualCamera l_virtualCam = m_cameraBrain.ActiveVirtualCamera as CinemachineVirtualCamera;
+            CinemachineBasicMultiChannelPerlin l_noise = l_virtualCam.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+            l_noise.m_AmplitudeGain = targetAmplitudeGain;
+
+            this.AddTimer(0.75f,
+                (TimerHolder p_timer, float p_deltaTime) =>
+                {
+                    float l_invertProgress = 1.0f - p_timer.Progress;
+                    float l_coef = Math.Abs(l_invertProgress - 1.0f) < 0.001f
+                        ? 1.0f
+                        : 1 - Mathf.Pow(2.0f, -10.0f * l_invertProgress);
+                    l_noise.m_AmplitudeGain = targetAmplitudeGain * l_coef;
+                },
+                (_) =>
+                {
+                    l_noise.m_AmplitudeGain = 0.0f;
+                });
+    }
         
         #region TIMERS
         private void TickTimers()
@@ -120,7 +147,7 @@ namespace Scripts.Managers
             }
             
             p_timer.Start();
-            int l_id = Mathf.RoundToInt(Time.time * 100);
+            int l_id = Mathf.RoundToInt(Time.time * 1000);
             m_timers.Add(l_id, p_timer);
 
             return l_id;
