@@ -62,6 +62,7 @@ namespace Scripts
         private float m_currentHealth;
         private bool m_isAlive;
         private bool m_isProtected;
+        private bool m_canMove;
 
         [Header("Killable visualisation")] [SerializeField]
         private Material m_outlineMaterial;
@@ -97,6 +98,7 @@ namespace Scripts
             m_grounded = false;
             m_isAlive = true;
             m_isProtected = false;
+            m_canMove = true;
 
             m_inShadowForm = false;
             m_shadowFormAvailable = true;
@@ -112,10 +114,9 @@ namespace Scripts
         {
             if (!m_isAlive) return;
 
-            m_grounded =
-                !(Physics2D.OverlapCircle(m_groundChecker.position, m_groundCheckerRadius, m_groundMask) is null);
+            m_grounded = !(Physics2D.OverlapCircle(m_groundChecker.position, m_groundCheckerRadius, m_groundMask) is null);
 
-            m_rigidBody.velocity = new Vector2((m_direction * m_currentSpeed), m_rigidBody.velocity.y);
+            if (m_canMove) m_rigidBody.velocity = new Vector2((m_direction * m_currentSpeed), m_rigidBody.velocity.y);
             if (m_direction < 0)
             {
                 transform.rotation = Quaternion.Euler(0f, 180f, 0f);
@@ -188,7 +189,8 @@ namespace Scripts
             if (!this.CanTakeDamage) return;
 
             Vector2 l_damageDirection = (p_from.transform.position - transform.position).normalized;
-            m_rigidBody.velocity -= l_damageDirection * 0.5f;
+            m_rigidBody.velocity = (l_damageDirection + Vector2.up).normalized * 2.0f;
+            m_canMove = false;
 
             m_currentHealth -= p_amount;
             this.OnPlayerHealthUpdate?.Invoke(m_currentHealth / m_maxHealth);
@@ -198,7 +200,7 @@ namespace Scripts
                 return;
             }
 
-
+            
             m_director.AddTimer(
                 0.75f,
                 (p_timer, p_deltaTime) =>
@@ -207,7 +209,10 @@ namespace Scripts
                     float l_redBlueValue = Mathf.Sin(l_progress) * 0.5f + 0.5f;
                     m_playerSprite.color = new Color(1.0f, l_redBlueValue, l_redBlueValue);
                 },
-                p_timer => { m_playerSprite.color = Color.white; }
+                p_timer => { 
+                    m_playerSprite.color = Color.white;
+                    m_canMove = true;
+                }
             );
         }
 
