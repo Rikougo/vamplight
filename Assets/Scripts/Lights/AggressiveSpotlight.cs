@@ -33,7 +33,7 @@ namespace Scripts.Lights
             Collider2D l_playerCollider = Physics2D.OverlapCircle(transform.position, m_radius, m_playerMask);
             bool l_lastState = m_colliding;
 
-            if (l_playerCollider is not null)
+            if (l_playerCollider is not null && l_playerCollider.CompareTag("Player"))
             {
                 m_colliding = false;
 
