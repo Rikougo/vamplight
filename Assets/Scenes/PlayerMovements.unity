@@ -176,7 +176,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3606414282418868692, guid: 76a473ea2bf1584458ac25393c66959e, type: 3}
       propertyPath: m_Name
-      value: Capsule
+      value: Nosfer
       objectReference: {fileID: 0}
     - target: {fileID: 3606414282418868703, guid: 76a473ea2bf1584458ac25393c66959e, type: 3}
       propertyPath: m_speed

@@ -70,7 +70,10 @@ namespace Scripts
                 m_rigidBody.gravityScale = m_fallGravityScale;
             }
         }
-
+        /// <summary>
+        /// A basidc videogame jump.
+        /// </summary>
+        /// <param name="context"></param>
         public void OnJump()
         {
             if (m_grounded)
@@ -79,12 +82,20 @@ namespace Scripts
                 m_rigidBody.velocity = Vector2.up * m_currentJumpForce;
             }
         }
-
+        /// <summary>
+        /// Makes it so that when the player releases the jump key, they fall a little bit faster to emulate a better jump physic.
+        /// </summary>
+        /// <param name="context"></param>
         public void EndJump()
         {
             m_rigidBody.gravityScale = m_jumpEndGravityScale;
         }
 
+        /// <summary>
+        /// [MISSING THE COOLDOWN FEATURE]
+        /// Activates the shadow form which protects the player from light and allows them to move faster.
+        /// </summary>
+        /// <param name="context"></param>
         public void OnShadowForm()
         {
             Debug.Log("pressed Special button");
