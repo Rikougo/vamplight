@@ -52,6 +52,14 @@ namespace Scripts
             m_grounded = !(Physics2D.OverlapCircle(m_groundChecker.position, m_groundCheckerRadius, m_groundMask) is null);
         
             m_rigidBody.velocity = new Vector2((m_direction * m_currentSpeed), m_rigidBody.velocity.y);
+            if(m_direction < 0)
+            {
+                transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            }
+            else if(m_direction > 0)
+            {
+                transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            }
 
             if (m_grounded)
             {
