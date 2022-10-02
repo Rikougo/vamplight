@@ -40,6 +40,7 @@ namespace Scripts.Managers
             m_input.actions["Jump"].canceled += (_) => m_player.EndJump();
 
             m_input.actions["Special"].started += (_) => m_player.OnShadowForm();
+            m_input.actions["Attack"].started += (_) => m_player.KillSelected();
 
             m_player.OnPlayerDeath += this.OnPlayerDeath;
         }
@@ -85,20 +86,37 @@ namespace Scripts.Managers
             return m_timers.ContainsKey(p_id);
         }
 
-        public void EndTimer(int p_id)
+        public bool EndTimer(int p_id)
         {
             if (HasTimer(p_id))
             {
                 TimerHolder l_timer = m_timers[p_id];
                 l_timer.End();
+                
+                return true;
             }
+
+            return false;
         }
-        
+
+        public bool CancelTimer(int p_id)
+        {
+            if (HasTimer(p_id))
+            {
+                TimerHolder l_timer = m_timers[p_id];
+                l_timer.Cancel();
+
+                return true;
+            }
+
+            return false;
+        }
         public int AddTimer(TimerHolder p_timer)
         {
             if (p_timer.Started || p_timer.Ended)
             {
-                Debug.LogWarning("Registering an already started or ended Timer.");
+                // Debug.LogWarning("Registering an already started or ended Timer.");
+                return -1;
             }
             
             p_timer.Start();

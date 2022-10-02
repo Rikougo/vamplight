@@ -5010,12 +5010,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9d21ff6f7eb4ca44a06ac4f0a2b5e9c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnPlayerHealthUpdate:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
+        m_MethodName: set_fillAmount
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_playerSprite: {fileID: 3502902514459226022}
   m_deathParticles: {fileID: 1765236556}
   m_speed: 3.5
   m_currentSpeed: 1
   m_jumpForce: 5
-  m_currentJumpForce: 10
+  m_currentJumpForce: 5
   m_fallThreshold: -2.5
   m_jumpEndGravityScale: 3
   m_fallGravityScale: 2.5
@@ -5025,8 +5040,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 8
   m_sFSpeed: 7.5
-  m_sFJumpForce: 12
-  m_sFDuration: 5
+  m_sFJumpForce: 7
+  m_sFDuration: 1.5
+  m_shadowFormCooldown: 5
   m_maxHealth: 100
 --- !u!1 &3606414282724470930
 GameObject:

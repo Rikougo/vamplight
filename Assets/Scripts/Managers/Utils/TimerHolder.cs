@@ -5,8 +5,11 @@
         public delegate void OnEndHandler(TimerHolder p_timer);
         public delegate void OnUpdateHandler(TimerHolder p_timer, float p_deltaTime);
 
+        public delegate void OnCancelHandler(TimerHolder p_timer);
+
         public event OnEndHandler OnEnd;
         public event OnUpdateHandler OnUpdate;
+        public event OnCancelHandler OnCancel;
         
         public float Duration
         {
@@ -52,6 +55,13 @@
             m_currentStatus = m_duration;
             m_ended = true;
             this.OnEnd?.Invoke(this);
+        }
+
+        public void Cancel()
+        {
+            m_currentStatus = m_duration;
+            m_ended = true;
+            this.OnCancel?.Invoke(this);
         }
     }
 }
