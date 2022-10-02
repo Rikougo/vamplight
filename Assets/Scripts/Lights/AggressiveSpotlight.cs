@@ -15,6 +15,7 @@ namespace Scripts.Lights
         [SerializeField] private LayerMask m_playerMask;
 
         public delegate void OnLightEnterHandler(AggressiveSpotlight p_spotLight);
+
         public delegate void OnLightExitHandler(AggressiveSpotlight p_spotlight);
 
         public event OnLightEnterHandler OnLightEnter;
@@ -38,15 +39,15 @@ namespace Scripts.Lights
                 m_colliding = false;
 
                 float l_halfAngle = m_openAngle * 0.5f;
-                
+
                 for (float l_angle = (-l_halfAngle); l_angle < l_halfAngle; l_angle += m_detectionPrecision)
                 {
                     float l_radAngle = (l_angle - transform.eulerAngles.z) * Mathf.Deg2Rad;
                     Vector2 l_direction = new Vector2(Mathf.Sin(l_radAngle), Mathf.Cos(l_radAngle));
                     RaycastHit2D l_hit = Physics2D.Raycast(
                         transform.position,
-                        l_direction, 
-                        float.MaxValue, 
+                        l_direction,
+                        float.MaxValue,
                         m_playerMask);
 
                     if (l_hit.collider == l_playerCollider)
@@ -70,23 +71,20 @@ namespace Scripts.Lights
         /// </summary>
         private void OnDrawGizmos()
         {
-            if (UnityEditor.EditorApplication.isPlaying == false)
+            Vector3 l_pos = transform.position;
+            Gizmos.color = m_colliding ? Color.red : Color.yellow;
+            float l_halfAngle = m_openAngle * 0.5f;
+            float l_halfRot = transform.eulerAngles.z * 0.5f;
+
+            for (float l_angle = (-l_halfAngle); l_angle < l_halfAngle; l_angle += m_detectionPrecision)
             {
-                Vector3 l_pos = transform.position;
-                Gizmos.color = m_colliding ? Color.red : Color.yellow;
-                float l_halfAngle = m_openAngle * 0.5f;
-                float l_halfRot = transform.eulerAngles.z * 0.5f;
-                
-                for (float l_angle = (-l_halfAngle); l_angle < l_halfAngle; l_angle += m_detectionPrecision)
-                {
-                    float l_radAngle = (l_angle - transform.eulerAngles.z) * Mathf.Deg2Rad;
-                    Vector2 l_direction = new Vector2(Mathf.Sin(l_radAngle), Mathf.Cos(l_radAngle));
-                    Gizmos.DrawLine(l_pos, l_pos + new Vector3(l_direction.x, l_direction.y, 0.0f) * (m_radius));
-                }
-                
-                Gizmos.color = m_colliding ? Color.red : Color.green;
-                Gizmos.DrawWireSphere(l_pos, m_radius);
+                float l_radAngle = (l_angle - transform.eulerAngles.z) * Mathf.Deg2Rad;
+                Vector2 l_direction = new Vector2(Mathf.Sin(l_radAngle), Mathf.Cos(l_radAngle));
+                Gizmos.DrawLine(l_pos, l_pos + new Vector3(l_direction.x, l_direction.y, 0.0f) * (m_radius));
             }
+
+            Gizmos.color = m_colliding ? Color.red : Color.green;
+            Gizmos.DrawWireSphere(l_pos, m_radius);
         }
     }
 }
