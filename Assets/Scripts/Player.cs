@@ -189,6 +189,7 @@ namespace Scripts
                 m_shadowFormAvailable = false;
 
                 SetShadowForm(true);
+                this.OnPlayerCooldownUpdate?.Invoke(0.0f);
 
                 // Delay to end
                 m_director.AddDelayedAction(m_sFDuration, (_) =>
