@@ -28,10 +28,11 @@ namespace Scripts
         [SerializeField] private ParticleSystem m_deathParticles;
         [SerializeField] private ParticleSystem m_sfParticles;
 
-        [Header("Movement Parameters")] [SerializeField]
-        private float m_speed = 1.0f;
+        [Header("Movement Parameters")] 
+        [SerializeField] private float m_speed = 1.0f;
 
-        [SerializeField] private float m_currentSpeed = 1.0f;
+        [SerializeField] private float m_knockBackForce = 2.5f;
+        private float m_currentSpeed = 1.0f;
 
         [Header("Jump Parameters")] [SerializeField]
         private float m_jumpForce = 5.0f;
@@ -149,6 +150,7 @@ namespace Scripts
             m_animator.SetFloat("Speed", Mathf.Abs(m_rigidBody.velocity.x));
             m_animator.SetBool("Grounded", m_grounded);
         }
+        
         /// <summary>
         /// A basidc videogame jump.
         /// </summary>
@@ -217,8 +219,10 @@ namespace Scripts
         {
             if (!this.CanTakeDamage) return;
 
-            Vector2 l_damageDirection = (p_from.transform.position - transform.position).normalized;
-            m_rigidBody.velocity = (l_damageDirection + Vector2.up).normalized * 2.0f;
+            Vector2 l_sideDirection =
+                (transform.position.x > p_from.transform.position.x ? Vector2.right : Vector2.left);
+            Vector2 l_damageDirection = (l_sideDirection + Vector2.up).normalized;
+            m_rigidBody.velocity = l_damageDirection * m_knockBackForce;
             m_canMove = false;
 
             Health -= p_amount;
@@ -310,7 +314,7 @@ namespace Scripts
                 transform.position = l_target.transform.position;
                 m_animator.SetTrigger("Regen");
                 m_deathParticles.Play();
-                Health += 20.0f;
+                Health += l_target.RegenAmount;
                 this.OnPlayerHealthUpdate?.Invoke(m_currentHealth / m_maxHealth);
             }
         }

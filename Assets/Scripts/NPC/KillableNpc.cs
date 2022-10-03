@@ -7,6 +7,9 @@ namespace NPC
     public class KillableNpc : MonoBehaviour
     {
         [SerializeField] private Sprite m_deathSprite;
+        [SerializeField] private float m_regenAmount = 20.0f;
+
+        public float RegenAmount => m_regenAmount;
         
         private void OnTriggerEnter2D(Collider2D p_collider)
         {
