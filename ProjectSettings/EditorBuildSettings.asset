@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu.unity
     guid: 8e09ec8ba2ba6dd408f06b57bcc85608
   - enabled: 1
-    path: Assets/Scenes/LightTest.unity
-    guid: 18881e0adcf7f9446b895b486816769a
+    path: Assets/Scenes/MainLevel.unity
+    guid: 9a889ffaff36e8147bb6257e4356cabe
   m_configObjects: {}
