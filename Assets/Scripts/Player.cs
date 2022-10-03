@@ -25,6 +25,7 @@ namespace Scripts
         private Rigidbody2D m_rigidBody;
         private SpriteRenderer m_playerSprite;
         private Animator m_animator;
+        [SerializeField] private Sprite noneSprite;
         [SerializeField] private ParticleSystem m_deathParticles;
         [SerializeField] private ParticleSystem m_sfParticles;
 
@@ -306,13 +307,23 @@ namespace Scripts
             if (m_killableInRange.Count >= 1)
             {
                 KillableNpc l_target = m_killableInRange.First();
-                l_target.Kill();
-                transform.position = l_target.transform.position;
+                l_target.GetComponent<SpriteRenderer>().sprite = noneSprite;
                 m_animator.SetTrigger("Regen");
+                if (l_target.Type == KillableNpc.NPCType.PASSIVE)
+                    m_animator.SetTrigger("Passive");
+                else if (l_target.Type == KillableNpc.NPCType.AGRESSIVE)
+                    m_animator.SetTrigger("Agressive");
+                transform.position = l_target.transform.position;
                 m_deathParticles.Play();
                 Health += 20.0f;
                 this.OnPlayerHealthUpdate?.Invoke(m_currentHealth / m_maxHealth);
             }
+        }
+
+        public void TargetKill()
+        {
+            KillableNpc l_target = m_killableInRange.First();
+            l_target.Kill();
         }
 
         private void OnDrawGizmosSelected()
