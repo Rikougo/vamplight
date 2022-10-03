@@ -25,6 +25,7 @@ namespace Scripts
         private Rigidbody2D m_rigidBody;
         private SpriteRenderer m_playerSprite;
         private Animator m_animator;
+        [SerializeField] private AnimationClip m_walkAnimation;
         [SerializeField] private ParticleSystem m_deathParticles;
 
         [Header("Movement Parameters")] [SerializeField]
@@ -138,12 +139,9 @@ namespace Scripts
                 m_rigidBody.gravityScale = m_fallGravityScale;
             }
 
-            if (!m_grounded)
-                m_animator.SetBool("Jump", true);
-            else
-                m_animator.SetBool("Jump", false);
+            m_animator.speed = m_currentSpeed / m_speed;
             m_animator.SetFloat("Speed", Mathf.Abs(m_rigidBody.velocity.x));
-            m_animator.SetFloat("Rise", m_rigidBody.velocity.y);
+            m_animator.SetBool("Grounded", m_grounded);
         }
         /// <summary>
         /// A basidc videogame jump.
@@ -153,6 +151,7 @@ namespace Scripts
         {
             if (m_grounded)
             {
+                m_animator.SetBool("Jump", true);
                 m_rigidBody.velocity = Vector2.up * m_currentJumpForce;
             }
         }
@@ -162,6 +161,7 @@ namespace Scripts
         /// <param name="context"></param>
         public void EndJump()
         {
+            m_animator.SetBool("Jump", false);
             m_rigidBody.gravityScale = m_jumpEndGravityScale;
         }
 
