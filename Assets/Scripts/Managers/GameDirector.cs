@@ -181,10 +181,10 @@ namespace Scripts.Managers
             {
                 m_dayNightTimer = 0.0f;
                 m_currentState = m_currentState == GameState.DAY ? GameState.NIGHT : GameState.DAY;
-                this.OnGameStateChange?.Invoke();
+                this.OnGameStateChange?.Invoke(m_currentState);
             }
 
-            m_stateText.text = String.Format("{0} [{1}]", m_currentState, m_dayNightTimer);
+            m_stateText.text = $"{m_currentState} [{m_dayNightTimer:#.##}]";
         }
 
         private void SendMoveDirection(float p_direction)
@@ -323,7 +323,7 @@ namespace Scripts.Managers
 
         #endregion
 
-        public delegate void OnGameStateChangeHandler();
+        public delegate void OnGameStateChangeHandler(GameState p_newState);
         public event OnGameStateChangeHandler OnGameStateChange;
     }
 }

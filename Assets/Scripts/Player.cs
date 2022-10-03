@@ -25,8 +25,8 @@ namespace Scripts
         private Rigidbody2D m_rigidBody;
         private SpriteRenderer m_playerSprite;
         private Animator m_animator;
-        [SerializeField] private AnimationClip m_walkAnimation;
         [SerializeField] private ParticleSystem m_deathParticles;
+        [SerializeField] private ParticleSystem m_sfParticles;
 
         [Header("Movement Parameters")] [SerializeField]
         private float m_speed = 1.0f;
@@ -60,8 +60,19 @@ namespace Scripts
 
         [Header("Player stats")] [SerializeField]
         private float m_maxHealth = 100.0f;
-
         private float m_currentHealth;
+
+        public float Health
+        {
+            get => m_currentHealth;
+            set
+            {
+                m_currentHealth = Mathf.Min(value, m_maxHealth);
+
+                if (m_currentHealth <= 0) Die();
+            }
+        }
+
         private bool m_isAlive;
         private bool m_isProtected;
         private bool m_canMove;
@@ -79,11 +90,6 @@ namespace Scripts
         {
             get => m_direction;
             set => m_direction = value;
-        }
-
-        public float Health
-        {
-            get => m_currentHealth;
         }
 
         private bool CanTakeDamage => m_isAlive && !m_inShadowForm && !m_isProtected;
@@ -203,6 +209,8 @@ namespace Scripts
             m_currentSpeed = p_active ? m_sFSpeed : m_speed;
             m_currentJumpForce = p_active ? m_sFJumpForce : m_jumpForce;
             m_playerSprite.color = p_active ? Color.black : Color.white;
+            if (p_active) m_sfParticles.Play();
+            else m_sfParticles.Stop();
         }
 
         public void TakeDamage(GameObject p_from, float p_amount)
@@ -213,7 +221,7 @@ namespace Scripts
             m_rigidBody.velocity = (l_damageDirection + Vector2.up).normalized * 2.0f;
             m_canMove = false;
 
-            m_currentHealth -= p_amount;
+            Health -= p_amount;
             this.OnPlayerHealthUpdate?.Invoke(m_currentHealth / m_maxHealth);
             if (m_currentHealth <= 0.0f)
             {
@@ -298,12 +306,12 @@ namespace Scripts
             if (m_killableInRange.Count >= 1)
             {
                 KillableNpc l_target = m_killableInRange.First();
+                l_target.Kill();
                 transform.position = l_target.transform.position;
                 m_animator.SetTrigger("Regen");
                 m_deathParticles.Play();
-                m_currentHealth += 20.0f;
+                Health += 20.0f;
                 this.OnPlayerHealthUpdate?.Invoke(m_currentHealth / m_maxHealth);
-                Destroy(l_target.gameObject);
             }
         }
 

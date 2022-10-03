@@ -10,7 +10,7 @@ public class Menu : MonoBehaviour
     [Header("Menu Componnents")]
     public CanvasGroup blackFade;
     public GameObject buttons;
-    private bool canSwitchScenes = false;
+    // private bool canSwitchScenes = false;
 
     
     public CanvasGroup credits;
@@ -24,19 +24,13 @@ public class Menu : MonoBehaviour
         blackFade.gameObject.SetActive(true);
         creditsBlackFade.alpha = 0;
         credits.gameObject.SetActive(false);
-        canSwitchScenes = false;
+        // canSwitchScenes = false;
     }
 
     void Start()
     {
         BlackFadeIn();
         Invoke("ButtonsIn", 3.5f);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     /// <summary>
