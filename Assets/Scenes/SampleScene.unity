@@ -199,7 +199,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7586b37ee3b01664c996c60655de7649, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_globalVolume: {fileID: 0}
   m_player: {fileID: 826067880}
+  m_cameraBrain: {fileID: 0}
+  m_defaultVolumeProfile: {fileID: 0}
+  m_deathVolumeProfile: {fileID: 0}
 --- !u!4 &147333231
 Transform:
   m_ObjectHideFlags: 0
@@ -823,6 +827,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 813923492856589066, guid: 76a473ea2bf1584458ac25393c66959e, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -3.93
+      objectReference: {fileID: 0}
+    - target: {fileID: 813923492856589066, guid: 76a473ea2bf1584458ac25393c66959e, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.4
+      objectReference: {fileID: 0}
     - target: {fileID: 3606414282418868688, guid: 76a473ea2bf1584458ac25393c66959e, type: 3}
       propertyPath: m_RootOrder
       value: 5
