@@ -8,6 +8,8 @@ namespace Scripts
         [Header("Player Componnents")]
         private Rigidbody2D m_rigidBody;
         [SerializeField] SpriteRenderer m_playerSprite;
+        [SerializeField] private TrailRenderer m_SFTrail;
+        [SerializeField] private ParticleSystem m_SFParticles;
 
         [Header("Movement Parameters")]
         [SerializeField] private float m_speed = 1.0f;
@@ -43,8 +45,8 @@ namespace Scripts
         private void Awake()
         {
             m_rigidBody = GetComponent<Rigidbody2D>();
-            
             m_currentSpeed = m_speed;
+            m_SFTrail.emitting = false;
         }
         
         public void Update()
@@ -101,6 +103,9 @@ namespace Scripts
             Debug.Log("pressed Special button");
             if(!m_inShadowForm)
             {
+                
+                m_SFTrail.emitting = true;
+                m_SFParticles.Play(m_SFParticles);
                 m_inShadowForm = true;
                 m_currentSpeed = m_sFSpeed;
                 m_currentJumpForce = m_sFJumpForce;
@@ -109,6 +114,8 @@ namespace Scripts
             }
             else if (m_inShadowForm)
             {
+                m_SFTrail.emitting = false;
+                m_SFParticles.Play(m_SFParticles);
                 m_inShadowForm = false;
                 m_currentSpeed = m_speed;
                 m_currentJumpForce = m_jumpForce;
