@@ -25,6 +25,7 @@ namespace Scripts
         private Rigidbody2D m_rigidBody;
         [SerializeField] private SpriteRenderer m_playerSprite;
         [SerializeField] private ParticleSystem m_deathParticles;
+        [SerializeField] private Animator m_animator;
 
         [Header("Movement Parameters")] [SerializeField]
         private float m_speed = 1.0f;
@@ -134,6 +135,8 @@ namespace Scripts
             {
                 m_rigidBody.gravityScale = m_fallGravityScale;
             }
+
+            m_animator.SetFloat("Speed", Mathf.Abs(m_rigidBody.velocity.x));
         }
         /// <summary>
         /// A basidc videogame jump.
