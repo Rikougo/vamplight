@@ -198,8 +198,8 @@ namespace Scripts
         {
             if (!this.CanTakeDamage) return;
 
-            Vector2 l_damageDirection = (p_from.transform.position - transform.position).normalized;
-            m_rigidBody.velocity = (l_damageDirection + Vector2.up).normalized * 2.0f;
+            Vector2 l_knockbackDirection = ((transform.position.x > p_from.transform.position.x ? Vector2.left : Vector2.right) + Vector2.up).normalized;
+            m_rigidBody.velocity = (l_knockbackDirection).normalized * 2.0f;
             m_canMove = false;
 
             m_currentHealth -= p_amount;
