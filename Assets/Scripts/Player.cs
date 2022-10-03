@@ -25,6 +25,7 @@ namespace Scripts
         private Rigidbody2D m_rigidBody;
         private SpriteRenderer m_playerSprite;
         private Animator m_animator;
+        [SerializeField] private Sprite noneSprite;
         [SerializeField] private ParticleSystem m_deathParticles;
         [SerializeField] private ParticleSystem m_sfParticles;
 
@@ -218,15 +219,18 @@ namespace Scripts
             else m_sfParticles.Stop();
         }
 
-        public void TakeDamage(GameObject p_from, float p_amount)
+        public void TakeDamage(GameObject p_from, float p_amount, bool p_knockback = true)
         {
             if (!this.CanTakeDamage) return;
 
-            Vector2 l_sideDirection =
-                (transform.position.x > p_from.transform.position.x ? Vector2.right : Vector2.left);
-            Vector2 l_damageDirection = (l_sideDirection + Vector2.up).normalized;
-            m_rigidBody.velocity = l_damageDirection * m_knockBackForce;
-            m_canMove = false;
+            if (p_knockback)
+            {
+                Vector2 l_sideDirection =
+                    (transform.position.x > p_from.transform.position.x ? Vector2.right : Vector2.left);
+                Vector2 l_damageDirection = (l_sideDirection + Vector2.up).normalized;
+                m_rigidBody.velocity = l_damageDirection * m_knockBackForce;
+                m_canMove = false;
+            }
 
             Health -= p_amount;
             this.OnPlayerHealthUpdate?.Invoke(m_currentHealth / m_maxHealth);
@@ -313,13 +317,24 @@ namespace Scripts
             if (m_killableInRange.Count >= 1)
             {
                 KillableNpc l_target = m_killableInRange.First();
-                l_target.Kill();
-                transform.position = l_target.transform.position;
+                l_target.StartKill();
+                l_target.GetComponent<SpriteRenderer>().sprite = noneSprite;
                 m_animator.SetTrigger("Regen");
+                if (l_target.Type == KillableNpc.NPCType.PASSIVE)
+                    m_animator.SetTrigger("Passive");
+                else if (l_target.Type == KillableNpc.NPCType.AGRESSIVE)
+                    m_animator.SetTrigger("Agressive");
+                transform.position = l_target.transform.position;
                 m_deathParticles.Play();
                 Health += l_target.RegenAmount;
                 this.OnPlayerHealthUpdate?.Invoke(m_currentHealth / m_maxHealth);
             }
+        }
+
+        public void TargetKill()
+        {
+            KillableNpc l_target = m_killableInRange.First();
+            l_target.Kill();
         }
 
         private void OnDrawGizmosSelected()
