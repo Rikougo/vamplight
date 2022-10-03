@@ -88,7 +88,7 @@ namespace Scripts
 
         private void Awake()
         {
-            m_collider = GetComponent<CapsuleCollider2D>();
+            m_collider = GetComponent<BoxCollider2D>();
             m_rigidBody = GetComponent<Rigidbody2D>();
             m_killableInRange = new List<KillableNpc>();
 
@@ -156,7 +156,6 @@ namespace Scripts
         }
 
         /// <summary>
-        /// [MISSING THE COOLDOWN FEATURE]
         /// Activates the shadow form which protects the player from light and allows them to move faster.
         /// </summary>
         /// <param name="context"></param>
