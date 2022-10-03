@@ -23,9 +23,9 @@ namespace Scripts
 
         [Header("Player Components")] private Collider2D m_collider;
         private Rigidbody2D m_rigidBody;
-        [SerializeField] private SpriteRenderer m_playerSprite;
+        private SpriteRenderer m_playerSprite;
+        private Animator m_animator;
         [SerializeField] private ParticleSystem m_deathParticles;
-        [SerializeField] private ParticleSystem m_sfParticles;
 
         [Header("Movement Parameters")] [SerializeField]
         private float m_speed = 1.0f;
@@ -89,8 +89,10 @@ namespace Scripts
 
         private void Awake()
         {
-            m_collider = GetComponent<BoxCollider2D>();
+            m_collider = GetComponent<CapsuleCollider2D>();
             m_rigidBody = GetComponent<Rigidbody2D>();
+            m_playerSprite = GetComponent<SpriteRenderer>();
+            m_animator = GetComponent<Animator>();
             m_killableInRange = new List<KillableNpc>();
 
             m_currentSpeed = m_speed;
@@ -118,7 +120,6 @@ namespace Scripts
             m_grounded = !(Physics2D.OverlapCircle(m_groundChecker.position, m_groundCheckerRadius, m_groundMask) is null);
 
             if (m_canMove) m_rigidBody.velocity = new Vector2((m_direction * m_currentSpeed), m_rigidBody.velocity.y);
-            transform.rotation = Quaternion.Euler(0f, m_direction < 0 ? 180f : 0.0f, 0f);
             if (m_direction < 0)
             {
                 transform.rotation = Quaternion.Euler(0f, 180f, 0f);
@@ -136,6 +137,13 @@ namespace Scripts
             {
                 m_rigidBody.gravityScale = m_fallGravityScale;
             }
+
+            if (!m_grounded)
+                m_animator.SetBool("Jump", true);
+            else
+                m_animator.SetBool("Jump", false);
+            m_animator.SetFloat("Speed", Mathf.Abs(m_rigidBody.velocity.x));
+            m_animator.SetFloat("Rise", m_rigidBody.velocity.y);
         }
         /// <summary>
         /// A basidc videogame jump.
@@ -158,6 +166,7 @@ namespace Scripts
         }
 
         /// <summary>
+        /// [MISSING THE COOLDOWN FEATURE]
         /// Activates the shadow form which protects the player from light and allows them to move faster.
         /// </summary>
         /// <param name="context"></param>
@@ -194,16 +203,14 @@ namespace Scripts
             m_currentSpeed = p_active ? m_sFSpeed : m_speed;
             m_currentJumpForce = p_active ? m_sFJumpForce : m_jumpForce;
             m_playerSprite.color = p_active ? Color.black : Color.white;
-            if (p_active) m_sfParticles.Play();
-            else m_sfParticles.Stop();
         }
 
         public void TakeDamage(GameObject p_from, float p_amount)
         {
             if (!this.CanTakeDamage) return;
 
-            Vector2 l_knockbackDirection = ((transform.position.x > p_from.transform.position.x ? Vector2.right : Vector2.left) + Vector2.up).normalized;
-            m_rigidBody.velocity = (l_knockbackDirection) * 5.0f;
+            Vector2 l_damageDirection = (p_from.transform.position - transform.position).normalized;
+            m_rigidBody.velocity = (l_damageDirection + Vector2.up).normalized * 2.0f;
             m_canMove = false;
 
             m_currentHealth -= p_amount;
@@ -292,6 +299,7 @@ namespace Scripts
             {
                 KillableNpc l_target = m_killableInRange.First();
                 transform.position = l_target.transform.position;
+                m_animator.SetTrigger("Regen");
                 m_deathParticles.Play();
                 m_currentHealth += 20.0f;
                 this.OnPlayerHealthUpdate?.Invoke(m_currentHealth / m_maxHealth);
