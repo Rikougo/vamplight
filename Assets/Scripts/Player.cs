@@ -23,9 +23,9 @@ namespace Scripts
 
         [Header("Player Components")] private Collider2D m_collider;
         private Rigidbody2D m_rigidBody;
-        [SerializeField] private SpriteRenderer m_playerSprite;
+        private SpriteRenderer m_playerSprite;
+        private Animator m_animator;
         [SerializeField] private ParticleSystem m_deathParticles;
-        [SerializeField] private Animator m_animator;
 
         [Header("Movement Parameters")] [SerializeField]
         private float m_speed = 1.0f;
@@ -91,6 +91,8 @@ namespace Scripts
         {
             m_collider = GetComponent<CapsuleCollider2D>();
             m_rigidBody = GetComponent<Rigidbody2D>();
+            m_playerSprite = GetComponent<SpriteRenderer>();
+            m_animator = GetComponent<Animator>();
             m_killableInRange = new List<KillableNpc>();
 
             m_currentSpeed = m_speed;
@@ -136,7 +138,12 @@ namespace Scripts
                 m_rigidBody.gravityScale = m_fallGravityScale;
             }
 
+            if (!m_grounded)
+                m_animator.SetBool("Jump", true);
+            else
+                m_animator.SetBool("Jump", false);
             m_animator.SetFloat("Speed", Mathf.Abs(m_rigidBody.velocity.x));
+            m_animator.SetFloat("Rise", m_rigidBody.velocity.y);
         }
         /// <summary>
         /// A basidc videogame jump.
@@ -292,6 +299,7 @@ namespace Scripts
             {
                 KillableNpc l_target = m_killableInRange.First();
                 transform.position = l_target.transform.position;
+                m_animator.SetTrigger("Regen");
                 m_deathParticles.Play();
                 m_currentHealth += 20.0f;
                 this.OnPlayerHealthUpdate?.Invoke(m_currentHealth / m_maxHealth);
