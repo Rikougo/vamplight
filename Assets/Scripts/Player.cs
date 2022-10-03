@@ -119,6 +119,8 @@ namespace Scripts
         private void Start()
         {
             m_director = GameObject.FindWithTag("GameController").GetComponent<GameDirector>();
+            
+            this.OnPlayerHealthUpdate?.Invoke(m_currentHealth / m_maxHealth);
         }
 
         public void Update()
