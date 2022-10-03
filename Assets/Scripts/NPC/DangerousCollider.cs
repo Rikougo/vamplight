@@ -8,7 +8,7 @@ public class DangerousCollider : MonoBehaviour
 {
     public float damageAmount = 10.0f;
     
-    private void OnCollisionEnter2D(Collision2D p_collider)
+    private void OnTriggerEnter2D(Collider2D p_collider)
     {
         if (p_collider.gameObject.CompareTag("Player"))
         {

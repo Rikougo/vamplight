@@ -25,6 +25,7 @@ namespace Scripts
         private Rigidbody2D m_rigidBody;
         [SerializeField] private SpriteRenderer m_playerSprite;
         [SerializeField] private ParticleSystem m_deathParticles;
+        [SerializeField] private ParticleSystem m_sfParticles;
 
         [Header("Movement Parameters")] [SerializeField]
         private float m_speed = 1.0f;
@@ -192,14 +193,16 @@ namespace Scripts
             m_currentSpeed = p_active ? m_sFSpeed : m_speed;
             m_currentJumpForce = p_active ? m_sFJumpForce : m_jumpForce;
             m_playerSprite.color = p_active ? Color.black : Color.white;
+            if (p_active) m_sfParticles.Play();
+            else m_sfParticles.Stop();
         }
 
         public void TakeDamage(GameObject p_from, float p_amount)
         {
             if (!this.CanTakeDamage) return;
 
-            Vector2 l_knockbackDirection = ((transform.position.x > p_from.transform.position.x ? Vector2.left : Vector2.right) + Vector2.up).normalized;
-            m_rigidBody.velocity = (l_knockbackDirection).normalized * 2.0f;
+            Vector2 l_knockbackDirection = ((transform.position.x > p_from.transform.position.x ? Vector2.right : Vector2.left) + Vector2.up).normalized;
+            m_rigidBody.velocity = (l_knockbackDirection) * 5.0f;
             m_canMove = false;
 
             m_currentHealth -= p_amount;

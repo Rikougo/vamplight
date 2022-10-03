@@ -146,7 +146,7 @@ namespace Scripts.Managers
             switch (m_currentState)
             {
                 case GameState.DAY:
-                    DayUpdate();
+                    // DayUpdate();
                     break;
                 case GameState.NIGHT:
                     NightUpdate();
