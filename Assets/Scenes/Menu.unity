@@ -1519,8 +1519,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: "Game Programmers:\nSamuel \"Elye\" Helye\r\nShinori\nMaxens Thiam\n\nGame
-    Designers:\nMaxime Champroux\nAlexandre Deflandre - Shaukaula\n\nGame Artists:\nMehdi
-    Haffoudhi\nAlice Seloudre-Pl\xE9nat\nPahmer - VerySpookyPizza"
+    Designers:\nMaxime Champroux \U0001F921\nAlexandre Deflandre - Shaukaula\n\nGame
+    Artists:\nMehdi Haffoudhi\nAlice Seloudre-Pl\xE9nat\nPahmer - VerySpookyPizza"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

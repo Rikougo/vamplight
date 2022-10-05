@@ -261,14 +261,14 @@ namespace Scripts
             if (!m_isAlive || m_inShadowForm) return;
 
             m_isAlive = false;
+            m_deathParticles.Play();
             this.OnPlayerDeath?.Invoke(this);
 
             m_playerSprite.gameObject.SetActive(false);
             m_rigidBody.isKinematic = true;
             m_rigidBody.velocity = Vector2.zero;
             m_collider.enabled = false;
-
-            m_deathParticles.Play();
+            
         }
 
         public void AddKillable(KillableNpc p_npc)
@@ -325,7 +325,6 @@ namespace Scripts
                 else if (l_target.Type == KillableNpc.NPCType.AGRESSIVE)
                     m_animator.SetTrigger("Agressive");
                 transform.position = l_target.transform.position;
-                m_deathParticles.Play();
                 Health += l_target.RegenAmount;
                 this.OnPlayerHealthUpdate?.Invoke(m_currentHealth / m_maxHealth);
             }

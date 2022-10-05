@@ -71,6 +71,7 @@ namespace Scripts.Managers
             m_input = GetComponent<PlayerInput>();
 
             m_dayNightTimer = 0.0f;
+            m_currentState = GameState.NIGHT;
         }
 
         private void Start()
@@ -146,7 +147,7 @@ namespace Scripts.Managers
             switch (m_currentState)
             {
                 case GameState.DAY:
-                    // DayUpdate();
+                    DayUpdate();
                     break;
                 case GameState.NIGHT:
                     NightUpdate();
@@ -183,8 +184,6 @@ namespace Scripts.Managers
                 m_currentState = m_currentState == GameState.DAY ? GameState.NIGHT : GameState.DAY;
                 this.OnGameStateChange?.Invoke(m_currentState);
             }
-
-            m_stateText.text = $"{m_currentState} [{m_dayNightTimer:#.##}]";
         }
 
         private void SendMoveDirection(float p_direction)
@@ -220,7 +219,7 @@ namespace Scripts.Managers
                 (_) =>
                 {
                     l_noise.m_AmplitudeGain = 0.0f;
-                    AfterPlayerDeathAnimation();
+                    this.AddDelayedAction(1.0f, (_) => AfterPlayerDeathAnimation());
                 });
         }
 
@@ -229,6 +228,11 @@ namespace Scripts.Managers
         private void AfterPlayerDeathAnimation()
         {
             SceneManager.LoadScene(1, LoadSceneMode.Single);
+        }
+
+        public void Win()
+        {
+            m_player.Die();
         }
 
         #region TIMERS

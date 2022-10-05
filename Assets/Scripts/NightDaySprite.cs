@@ -18,7 +18,10 @@ public class NightDaySprite : MonoBehaviour
 
     public void Start()
     {
-        GameObject.FindWithTag("GameController").GetComponent<GameDirector>().OnGameStateChange += OnNewState;
+        GameDirector l_director = GameObject.FindWithTag("GameController").GetComponent<GameDirector>();
+        l_director.OnGameStateChange += OnNewState;
+        Sprite l_sprite = l_director.CurrentState == GameDirector.GameState.DAY ? m_daySprite : m_nightSprite;
+        m_renderer.sprite = l_sprite;
     }
     
     private void OnNewState(GameDirector.GameState p_newState)
